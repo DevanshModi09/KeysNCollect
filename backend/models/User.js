@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema(
   {
     username: {
       type: String,
+      unique: true,
       required: [true, 'Please provide username'],
       minlength: [3, 'Username must be at least 3 characters long'],
       maxlength: [30, 'Username must be at most 30 characters long'],
@@ -26,7 +27,7 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ['user', 'admin'],
+      enum: ['user', 'admin', 'techlead'],
       default: 'user',
     },
   },
@@ -36,7 +37,6 @@ const userSchema = new mongoose.Schema(
 userSchema.pre('save', async function () {
   this.password = await bcrypt.hash(this.password, 10);
 });
-
 
 userSchema.methods.comparePassword = async function (candidatePassword) {
   const isMatch = await bcrypt.compare(candidatePassword, this.password);
